@@ -12,7 +12,7 @@ export default function Navbar() {
   const navLinks = [
     { name: "Shop", href: "/shop" },
     { name: "About", href: "/about" },
-    { name: "Athletes", href: "/athletes" },
+    { name: "Join The Team", href: "/athletes" },
     { name: "Contact", href: "/contact" },
   ];
 
