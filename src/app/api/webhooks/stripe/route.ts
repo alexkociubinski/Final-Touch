@@ -1,5 +1,5 @@
 import { getStripe } from "@/lib/stripe";
-import { resend } from "@/lib/resend";
+import { getResend } from "@/lib/resend";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -29,6 +29,7 @@ export async function POST(req: Request) {
     try {
       // Send confirmation email via Resend
       if (customerEmail) {
+        const resend = getResend();
         await resend.emails.send({
           from: "Final Touch <orders@finaltouch.com>", // Needs domain verification in Resend
           to: customerEmail,

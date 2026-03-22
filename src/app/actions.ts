@@ -1,6 +1,6 @@
 "use server";
 
-import { resend } from "@/lib/resend";
+import { getResend } from "@/lib/resend";
 import { redirect } from "next/navigation";
 
 export async function sendContactEmail(prevState: any, formData: FormData) {
@@ -13,6 +13,7 @@ export async function sendContactEmail(prevState: any, formData: FormData) {
   }
 
   try {
+    const resend = getResend();
     await resend.emails.send({
       from: "Final Touch <onboarding@resend.dev>",
       to: "alexkociubinski@gmail.com", // Placeholder - check real owner email
@@ -39,6 +40,7 @@ export async function sendAthleteApplication(prevState: any, formData: FormData)
   }
 
   try {
+    const resend = getResend();
     await resend.emails.send({
       from: "Final Touch Sponsorship <onboarding@resend.dev>",
       to: "alexkociubinski@gmail.com",
