@@ -1,4 +1,4 @@
-import { stripe } from "@/lib/stripe";
+import { getStripe } from "@/lib/stripe";
 import { resend } from "@/lib/resend";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
@@ -10,6 +10,7 @@ export async function POST(req: Request) {
   let event;
 
   try {
+    const stripe = getStripe();
     event = stripe.webhooks.constructEvent(
       body,
       signature,
