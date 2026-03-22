@@ -19,6 +19,9 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   title: "Final Touch | Premium Sports Decals",
   description: "Custom adhesive decals for athletes. Flags, crosses, numbers, and symbols for boxing gloves, bats, sticks, and cleats.",
+  icons: {
+    icon: "/FinalTouchWhite.png",
+  },
 };
 
 export default function RootLayout({
