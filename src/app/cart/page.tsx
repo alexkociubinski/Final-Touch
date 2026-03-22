@@ -42,52 +42,48 @@ export default function CartPage() {
           <h2 id="cart-heading" className="sr-only">Items in your cart</h2>
           <ul role="list" className="divide-y divide-white/10 border-t border-white/10">
             {items.map((item) => (
-              <li key={item.product.id} className="flex py-10 sm:py-12 border-b border-white/10">
-                <div className="flex-shrink-0 h-32 w-32 bg-zinc-900 border border-white/10">
+              <li key={item.product.id} className="flex flex-col sm:flex-row py-8 sm:py-10 border-b border-white/10 gap-4 sm:gap-6">
+                <div className="flex-shrink-0 h-28 w-28 sm:h-32 sm:w-32 bg-zinc-900 border border-white/10 self-start">
                   {/* Placeholder */}
                   <div className="w-full h-full bg-zinc-800 animate-pulse" />
                 </div>
 
-                <div className="ml-8 flex flex-1 flex-col justify-between">
-                  <div className="sm:grid sm:grid-cols-2 sm:gap-x-6">
+                <div className="flex flex-1 flex-col justify-between">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
                     <div>
-                      <div className="flex justify-between">
-                        <h3 className="text-sm">
-                          <Link href={`/shop/${item.product.slug}`} className="font-display font-bold uppercase tracking-tight hover:text-accent transition-colors">
-                            {item.product.name}
-                          </Link>
-                        </h3>
-                      </div>
+                      <h3 className="text-sm">
+                        <Link href={`/shop/${item.product.slug}`} className="font-display font-bold uppercase tracking-tight hover:text-accent transition-colors">
+                          {item.product.name}
+                        </Link>
+                      </h3>
                       <div className="mt-1 flex text-xs text-white/50 font-bold uppercase tracking-widest">
                         <p>{item.product.category}</p>
                       </div>
-                      <p className="mt-4 text-sm font-medium">{formatPrice(item.product.price)}</p>
+                      <p className="mt-2 sm:mt-4 text-sm font-medium">{formatPrice(item.product.price)}</p>
                     </div>
 
-                    <div className="mt-4 sm:mt-0 sm:pr-9 flex items-center justify-end gap-12">
-                      <div className="flex items-center border border-white/10 rounded-lg overflow-hidden h-12">
+                    <div className="flex items-center justify-between sm:justify-end sm:gap-6">
+                      <div className="flex items-center border border-white/10 rounded overflow-hidden h-10 sm:h-12">
                          <button
                            onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                           className="px-6 hover:bg-white/5 transition-colors font-bold"
+                           className="px-3 sm:px-4 hover:bg-white/5 transition-colors font-bold text-sm"
                          >
                            -
                          </button>
-                         <span className="w-10 text-center font-bold">{item.quantity}</span>
+                         <span className="w-8 sm:w-10 text-center font-bold text-sm">{item.quantity}</span>
                          <button
                            onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                           className="px-6 hover:bg-white/5 transition-colors font-bold"
+                           className="px-3 sm:px-4 hover:bg-white/5 transition-colors font-bold text-sm"
                          >
                            +
                          </button>
                       </div>
-                      <div className="flex">
-                        <button
-                          onClick={() => removeItem(item.product.id)}
-                          className="text-[10px] font-bold uppercase tracking-[0.2em] text-red-500 hover:text-red-600 transition-colors"
-                        >
-                          Remove
-                        </button>
-                      </div>
+                      <button
+                        onClick={() => removeItem(item.product.id)}
+                        className="text-[10px] font-bold uppercase tracking-[0.2em] text-red-500 hover:text-red-600 transition-colors"
+                      >
+                        Remove
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -98,7 +94,7 @@ export default function CartPage() {
       </div>
 
       <div className="mt-16 sm:mt-24 lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-12">
-        <section className="lg:col-span-5 lg:col-start-8 bg-zinc-900/50 p-8 border border-white/10 rounded-xl">
+        <section className="lg:col-span-5 lg:col-start-8 bg-zinc-900/50 p-6 sm:p-8 border border-white/10 rounded-xl">
           <h2 className="font-display text-xl font-bold uppercase tracking-tight mb-8">
             Order Summary
           </h2>

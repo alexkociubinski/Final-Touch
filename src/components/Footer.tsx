@@ -50,7 +50,7 @@ export default function Footer() {
                 Final Touch
               </span>
             </Link>
-            <p className="max-w-xs text-sm text-white/60 leading-relaxed">
+            <p className="max-w-sm text-sm text-white/60 leading-relaxed">
               Premium adhesive decals for athletes who care about the details. 
               Engineered for game day performance.
             </p>

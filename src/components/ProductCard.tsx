@@ -33,7 +33,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       </Link>
 
       {/* Info */}
-      <div className="mt-4 flex flex-1 flex-col h-24">
+      <div className="mt-4 flex flex-1 flex-col">
         <div className="flex justify-between items-start">
           <h3 className="text-sm font-display font-bold uppercase tracking-tight text-white">
             <Link href={`/shop/${product.slug}`}>
