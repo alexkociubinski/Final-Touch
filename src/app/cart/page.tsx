@@ -4,6 +4,7 @@ import { useCart } from "@/context/CartContext";
 import { formatPrice } from "@/lib/utils";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useCheckout } from "@/hooks/useCheckout";
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, subtotal } = useCart();
@@ -12,6 +13,8 @@ export default function CartPage() {
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  const { handleCheckout, isLoading } = useCheckout();
 
   if (!isMounted) return null;
 
@@ -123,9 +126,11 @@ export default function CartPage() {
 
           <div className="mt-10">
             <button
-               className="w-full h-16 bg-white text-black text-xs font-bold uppercase tracking-[0.2em] transition-all hover:bg-accent hover:text-white"
+               onClick={handleCheckout}
+               disabled={isLoading}
+               className="w-full h-16 bg-white text-black text-xs font-bold uppercase tracking-[0.2em] transition-all hover:bg-accent hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Begin Checkout
+              {isLoading ? "Opening Checkout..." : "Begin Checkout"}
             </button>
           </div>
         </section>

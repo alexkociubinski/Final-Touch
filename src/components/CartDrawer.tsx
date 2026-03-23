@@ -5,6 +5,7 @@ import { formatPrice } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { useCheckout } from "@/hooks/useCheckout";
 
 export default function CartDrawer() {
   const { 
@@ -39,6 +40,8 @@ export default function CartDrawer() {
       document.body.style.overflow = "";
     }
   }, [isCartOpen]);
+
+  const { handleCheckout, isLoading } = useCheckout();
 
   if (!isMounted) return null;
 
@@ -181,9 +184,11 @@ export default function CartDrawer() {
                   View Cart
                 </Link>
                 <button
-                  className="flex w-full items-center justify-center bg-accent py-4 text-xs font-bold uppercase tracking-widest text-accent-foreground transition-all hover:bg-accent/90 focus:ring-2 focus:ring-accent focus:ring-offset-2"
+                  onClick={handleCheckout}
+                  disabled={isLoading}
+                  className="flex w-full items-center justify-center bg-accent py-4 text-xs font-bold uppercase tracking-widest text-accent-foreground transition-all hover:bg-accent/90 focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Checkout
+                  {isLoading ? "Opening Checkout..." : "Checkout"}
                 </button>
               </div>
             </div>

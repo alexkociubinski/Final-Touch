@@ -15,8 +15,8 @@ export async function sendContactEmail(prevState: any, formData: FormData) {
   try {
     const resend = getResend();
     await resend.emails.send({
-      from: "Final Touch <onboarding@resend.dev>",
-      to: "alexkociubinski@gmail.com", // Placeholder - check real owner email
+      from: "Final Touch <hello@finaltouchsports.com>",
+      to: "finaltouch2026.us@gmail.com",
       subject: `New Contact Message from ${name}`,
       text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
     });
@@ -42,8 +42,8 @@ export async function sendAthleteApplication(prevState: any, formData: FormData)
   try {
     const resend = getResend();
     await resend.emails.send({
-      from: "Final Touch Sponsorship <onboarding@resend.dev>",
-      to: "alexkociubinski@gmail.com",
+      from: "Final Touch Sponsorship <sponsorship@finaltouchsports.com>",
+      to: "finaltouch2026.us@gmail.com",
       subject: `New Athlete Application: ${name} (${sport})`,
       text: `Name: ${name}\nEmail: ${email}\nSport: ${sport}\nSocial: ${handle}\n\nWhy Final Touch?:\n${message}`,
     });

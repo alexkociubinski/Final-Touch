@@ -31,7 +31,7 @@ export async function POST(req: Request) {
       if (customerEmail) {
         const resend = getResend();
         await resend.emails.send({
-          from: "Final Touch <orders@finaltouch.com>", // Needs domain verification in Resend
+          from: "Final Touch <orders@finaltouchsports.com>",
           to: customerEmail,
           subject: "Order Confirmation - Final Touch",
           text: `Hi ${customerName},\n\nThank you for your order! We've received it and are preparing your decals for shipment.\n\nEnjoy the game.\n\n- The Final Touch Team`,
