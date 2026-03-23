@@ -8,18 +8,21 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
-import type { Product } from "@/data/products";
+import type { Product, ProductVariation } from "@/data/products";
 
 export interface CartItem {
   product: Product;
+  variation: ProductVariation;
   quantity: number;
+  // Unique key combining product id + variation
+  key: string;
 }
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (product: Product, quantity?: number) => void;
-  removeItem: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  addItem: (product: Product, variation: ProductVariation, quantity?: number) => void;
+  removeItem: (key: string) => void;
+  updateQuantity: (key: string, quantity: number) => void;
   clearCart: () => void;
   totalItems: number;
   subtotal: number;
@@ -29,7 +32,11 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-const CART_STORAGE_KEY = "final-touch-cart";
+const CART_STORAGE_KEY = "final-touch-cart-v2";
+
+function makeKey(productId: string, variation: ProductVariation): string {
+  return `${productId}::${JSON.stringify(variation)}`;
+}
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
@@ -56,33 +63,34 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [items, hydrated]);
 
-  const addItem = useCallback((product: Product, quantity = 1) => {
+  const addItem = useCallback((product: Product, variation: ProductVariation, quantity = 1) => {
+    const key = makeKey(product.id, variation);
     setItems((prev) => {
-      const existing = prev.find((item) => item.product.id === product.id);
+      const existing = prev.find((item) => item.key === key);
       if (existing) {
         return prev.map((item) =>
-          item.product.id === product.id
+          item.key === key
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
       }
-      return [...prev, { product, quantity }];
+      return [...prev, { product, variation, quantity, key }];
     });
     setIsCartOpen(true);
   }, []);
 
-  const removeItem = useCallback((productId: string) => {
-    setItems((prev) => prev.filter((item) => item.product.id !== productId));
+  const removeItem = useCallback((key: string) => {
+    setItems((prev) => prev.filter((item) => item.key !== key));
   }, []);
 
-  const updateQuantity = useCallback((productId: string, quantity: number) => {
+  const updateQuantity = useCallback((key: string, quantity: number) => {
     if (quantity <= 0) {
-      setItems((prev) => prev.filter((item) => item.product.id !== productId));
+      setItems((prev) => prev.filter((item) => item.key !== key));
       return;
     }
     setItems((prev) =>
       prev.map((item) =>
-        item.product.id === productId ? { ...item, quantity } : item
+        item.key === key ? { ...item, quantity } : item
       )
     );
   }, []);

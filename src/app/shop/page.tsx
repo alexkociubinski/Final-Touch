@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { products, categories, type ProductCategory } from "@/data/products";
+import { products, type ProductType } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 import CategoryTabs from "@/components/CategoryTabs";
 import { Suspense, useMemo } from "react";
@@ -9,14 +9,14 @@ import { Suspense, useMemo } from "react";
 function ShopContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const activeCategory = (searchParams.get("category") as ProductCategory | "all") || "all";
+  const activeCategory = (searchParams.get("category") as ProductType | "all") || "all";
 
   const filteredProducts = useMemo(() => {
     if (activeCategory === "all") return products;
-    return products.filter((p) => p.category === activeCategory);
+    return products.filter((p) => p.type === activeCategory);
   }, [activeCategory]);
 
-  const handleCategoryChange = (category: ProductCategory | "all") => {
+  const handleCategoryChange = (category: ProductType | "all") => {
     const params = new URLSearchParams(searchParams.toString());
     if (category === "all") {
       params.delete("category");
@@ -34,22 +34,21 @@ function ShopContent() {
           The Shop
         </h1>
         <p className="mt-4 max-w-xl text-white/50">
-          Professional grade identification for your equipment. Pick your design, 
-          hit the field, and leave your mark.
+          Precision-cut adhesive decals for athletes. Choose your design, pick your size, and make your mark.
         </p>
       </div>
 
       {/* Filter Tabs */}
       <div className="mb-16">
-        <CategoryTabs 
-          activeCategory={activeCategory} 
-          onSelect={handleCategoryChange} 
+        <CategoryTabs
+          activeCategory={activeCategory}
+          onSelect={handleCategoryChange}
         />
       </div>
 
       {/* Grid */}
       {filteredProducts.length > 0 ? (
-        <div className="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
           {filteredProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

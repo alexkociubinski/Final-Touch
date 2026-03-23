@@ -4,12 +4,11 @@ import ProductCard from "@/components/ProductCard";
 import { products } from "@/data/products";
 
 export default function Home() {
-  // Get featured products (first one of each category)
+  // Get one product of each type
   const featured = [
-    products.find(p => p.category === 'flags'),
-    products.find(p => p.category === 'crosses'),
-    products.find(p => p.category === 'numbers'),
-    products.find(p => p.category === 'symbols'),
+    products.find(p => p.type === 'flag'),
+    products.find(p => p.type === 'number'),
+    products.find(p => p.type === 'symbol'),
   ].filter(Boolean);
 
   const sports = [
@@ -68,11 +67,15 @@ export default function Home() {
       {/* Categories Grid */}
       <section className="pb-24 px-4 bg-black">
         <div className="mx-auto max-w-7xl">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {['Flags', 'Crosses', 'Numbers', 'Symbols'].map((label) => (
-              <Link 
-                key={label}
-                href={`/shop?category=${label.toLowerCase()}`}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              { label: 'Flags', type: 'flag' },
+              { label: 'Numbers', type: 'number' },
+              { label: 'Crosses', type: 'symbol' },
+            ].map(({ label, type }) => (
+              <Link
+                key={type}
+                href={`/shop?category=${type}`}
                 className="group relative h-[400px] overflow-hidden bg-zinc-900 border border-white/10"
               >
                 <div className="absolute inset-0 flex items-center justify-center transition-transform duration-700 group-hover:scale-110">

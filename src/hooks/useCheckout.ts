@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
+import { getStripePriceId } from "@/data/products";
 
 export function useCheckout() {
   const [isLoading, setIsLoading] = useState(false);
@@ -14,13 +15,15 @@ export function useCheckout() {
     try {
       const response = await fetch("/api/checkout", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           items: items.map((item) => ({
-            stripePriceId: item.product.stripePriceId,
+            stripePriceId: getStripePriceId(item.product.size),
             quantity: item.quantity,
+            // Metadata for order identification
+            name: item.product.name,
+            size: item.product.size,
+            variation: item.variation,
           })),
         }),
       });
@@ -31,7 +34,7 @@ export function useCheckout() {
         window.location.href = data.url;
       } else {
         console.error("Checkout error:", data.error);
-        alert(data.error || "Failed to initiate checkout. Please check your Stripe Price IDs.");
+        alert(data.error || "Failed to initiate checkout. Please try again.");
       }
     } catch (error) {
       console.error("Checkout error:", error);
@@ -41,8 +44,5 @@ export function useCheckout() {
     }
   };
 
-  return {
-    handleCheckout,
-    isLoading,
-  };
+  return { handleCheckout, isLoading };
 }

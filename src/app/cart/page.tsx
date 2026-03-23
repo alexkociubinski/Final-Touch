@@ -3,18 +3,18 @@
 import { useCart } from "@/context/CartContext";
 import { formatPrice } from "@/lib/utils";
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useCheckout } from "@/hooks/useCheckout";
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, subtotal } = useCart();
   const [isMounted, setIsMounted] = useState(false);
+  const { handleCheckout, isLoading } = useCheckout();
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
-  const { handleCheckout, isLoading } = useCheckout();
 
   if (!isMounted) return null;
 
@@ -41,84 +41,92 @@ export default function CartPage() {
       </h1>
 
       <div className="lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-12 xl:gap-x-16">
-        <section aria-labelledby="cart-heading" className="lg:col-span-12">
+        <section aria-labelledby="cart-heading" className="lg:col-span-7">
           <h2 id="cart-heading" className="sr-only">Items in your cart</h2>
           <ul role="list" className="divide-y divide-white/10 border-t border-white/10">
-            {items.map((item) => (
-              <li key={item.product.id} className="flex flex-col sm:flex-row py-8 sm:py-10 border-b border-white/10 gap-4 sm:gap-6">
-                <div className="flex-shrink-0 h-28 w-28 sm:h-32 sm:w-32 bg-zinc-900 border border-white/10 self-start">
-                  {/* Placeholder */}
-                  <div className="w-full h-full bg-zinc-800 animate-pulse" />
-                </div>
+            {items.map((item) => {
+              const varParts: string[] = [];
+              if (item.variation.country) varParts.push(item.variation.country.charAt(0).toUpperCase() + item.variation.country.slice(1));
+              if (item.variation.digit !== undefined) varParts.push(`#${item.variation.digit}`);
+              if (item.variation.color) varParts.push(item.variation.color.charAt(0).toUpperCase() + item.variation.color.slice(1));
+              const varLabel = varParts.join(" · ");
 
-                <div className="flex flex-1 flex-col justify-between">
-                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
-                    <div>
-                      <h3 className="text-sm">
-                        <Link href={`/shop/${item.product.slug}`} className="font-display font-bold uppercase tracking-tight hover:text-accent transition-colors">
-                          {item.product.name}
-                        </Link>
-                      </h3>
-                      <div className="mt-1 flex text-xs text-white/50 font-bold uppercase tracking-widest">
-                        <p>{item.product.category}</p>
-                      </div>
-                      <p className="mt-2 sm:mt-4 text-sm font-medium">{formatPrice(item.product.price)}</p>
-                    </div>
+              return (
+                <li key={item.key} className="flex flex-col sm:flex-row py-8 sm:py-10 border-b border-white/10 gap-4 sm:gap-6">
+                  <div className="flex-shrink-0 h-28 w-28 sm:h-32 sm:w-32 bg-zinc-900 border border-white/10 self-start relative overflow-hidden">
+                    {item.product.image ? (
+                      <Image src={item.product.image} alt={item.product.name} fill className="object-contain p-3" sizes="128px" />
+                    ) : (
+                      <div className="w-full h-full bg-zinc-800 animate-pulse" />
+                    )}
+                  </div>
 
-                    <div className="flex items-center justify-between sm:justify-end sm:gap-6">
-                      <div className="flex items-center border border-white/10 rounded overflow-hidden h-10 sm:h-12">
-                         <button
-                           onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                           className="px-3 sm:px-4 hover:bg-white/5 transition-colors font-bold text-sm"
-                         >
-                           -
-                         </button>
-                         <span className="w-8 sm:w-10 text-center font-bold text-sm">{item.quantity}</span>
-                         <button
-                           onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                           className="px-3 sm:px-4 hover:bg-white/5 transition-colors font-bold text-sm"
-                         >
-                           +
-                         </button>
+                  <div className="flex flex-1 flex-col justify-between">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+                      <div>
+                        <h3 className="text-sm">
+                          <Link href={`/shop/${item.product.slug}`} className="font-display font-bold uppercase tracking-tight hover:text-accent transition-colors">
+                            {item.product.name}
+                          </Link>
+                        </h3>
+                        {varLabel && (
+                          <p className="mt-1 text-xs font-bold uppercase tracking-widest text-accent">
+                            {varLabel}
+                          </p>
+                        )}
+                        <p className="mt-1 text-xs text-white/40 font-bold uppercase tracking-widest">
+                          {item.product.size === "small" ? "Small" : "Large"}
+                        </p>
+                        <p className="mt-2 sm:mt-4 text-sm font-medium">{formatPrice(item.product.price)}</p>
                       </div>
-                      <button
-                        onClick={() => removeItem(item.product.id)}
-                        className="text-[10px] font-bold uppercase tracking-[0.2em] text-red-500 hover:text-red-600 transition-colors"
-                      >
-                        Remove
-                      </button>
+
+                      <div className="flex items-center justify-between sm:justify-end sm:gap-6">
+                        <div className="flex items-center border border-white/10 overflow-hidden h-10 sm:h-12">
+                          <button
+                            onClick={() => updateQuantity(item.key, item.quantity - 1)}
+                            className="px-3 sm:px-4 hover:bg-white/5 transition-colors font-bold text-sm"
+                          >
+                            -
+                          </button>
+                          <span className="w-8 sm:w-10 text-center font-bold text-sm">{item.quantity}</span>
+                          <button
+                            onClick={() => updateQuantity(item.key, item.quantity + 1)}
+                            className="px-3 sm:px-4 hover:bg-white/5 transition-colors font-bold text-sm"
+                          >
+                            +
+                          </button>
+                        </div>
+                        <button
+                          onClick={() => removeItem(item.key)}
+                          className="text-[10px] font-bold uppercase tracking-[0.2em] text-red-500 hover:text-red-600 transition-colors"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ul>
         </section>
-      </div>
 
-      <div className="mt-16 sm:mt-24 lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-12">
-        <section className="lg:col-span-5 lg:col-start-8 bg-zinc-900/50 p-6 sm:p-8 border border-white/10 rounded-xl">
+        <section className="mt-16 sm:mt-24 lg:mt-0 lg:col-span-5 bg-zinc-900/50 p-6 sm:p-8 border border-white/10 rounded-xl">
           <h2 className="font-display text-xl font-bold uppercase tracking-tight mb-8">
             Order Summary
           </h2>
           <div className="flow-root">
             <dl className="-my-4 divide-y divide-white/10 text-sm">
               <div className="flex items-center justify-between py-4">
-                <dt className="text-white/50 uppercase font-bold tracking-widest text-xs">
-                  Subtotal
-                </dt>
+                <dt className="text-white/50 uppercase font-bold tracking-widest text-xs">Subtotal</dt>
                 <dd className="font-medium">{formatPrice(subtotal)}</dd>
               </div>
               <div className="flex items-center justify-between py-4">
-                <dt className="text-white/50 uppercase font-bold tracking-widest text-xs">
-                  Shipping
-                </dt>
+                <dt className="text-white/50 uppercase font-bold tracking-widest text-xs">Shipping</dt>
                 <dd className="font-medium">Calculated at checkout</dd>
               </div>
               <div className="flex items-center justify-between py-4 border-t-2 border-white pt-6 mt-2">
-                <dt className="font-display text-lg font-bold uppercase tracking-tight">
-                  Total
-                </dt>
+                <dt className="font-display text-lg font-bold uppercase tracking-tight">Total</dt>
                 <dd className="text-lg font-bold">{formatPrice(subtotal)}</dd>
               </div>
             </dl>
