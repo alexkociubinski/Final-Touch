@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
-import { getStripePriceId } from "@/data/products";
 
 export function useCheckout() {
   const [isLoading, setIsLoading] = useState(false);
@@ -18,11 +17,9 @@ export function useCheckout() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           items: items.map((item) => ({
-            stripePriceId: getStripePriceId(item.product.size),
+            size: item.product.size, // API route resolves to price ID server-side
             quantity: item.quantity,
-            // Metadata for order identification
             name: item.product.name,
-            size: item.product.size,
             variation: item.variation,
           })),
         }),

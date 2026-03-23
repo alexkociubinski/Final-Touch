@@ -2,10 +2,9 @@ import { getStripe } from "@/lib/stripe";
 import { NextResponse } from "next/server";
 
 interface CheckoutItem {
-  stripePriceId: string;
+  size: "small" | "large";
   quantity: number;
   name: string;
-  size: string;
   variation: Record<string, string | undefined>;
 }
 
@@ -15,6 +14,14 @@ export async function POST(req: Request) {
 
     if (!items || items.length === 0) {
       return NextResponse.json({ error: "No items in cart" }, { status: 400 });
+    }
+
+    // Resolve price IDs server-side where env vars are available
+    const priceSmall = process.env.STRIPE_PRICE_SMALL;
+    const priceLarge = process.env.STRIPE_PRICE_LARGE;
+
+    if (!priceSmall || !priceLarge) {
+      return NextResponse.json({ error: "Stripe price IDs not configured" }, { status: 500 });
     }
 
     // Build a human-readable summary of all items + variations for Stripe metadata
@@ -31,7 +38,7 @@ export async function POST(req: Request) {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: items.map((item) => ({
-        price: item.stripePriceId,
+        price: item.size === "small" ? priceSmall : priceLarge,
         quantity: item.quantity,
       })),
       mode: "payment",
